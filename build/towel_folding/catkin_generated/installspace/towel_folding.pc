@@ -1,0 +1,8 @@
+prefix=/home/cc/ee106a/fl21/class/ee106a-afy/EECS-106A-Final-Project/install
+
+Name: towel_folding
+Description: Description of towel_folding
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

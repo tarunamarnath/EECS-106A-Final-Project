@@ -1,0 +1,2 @@
+towel_folding
+-DCATKIN_DEVEL_PREFIX=/home/cc/ee106a/fl21/class/ee106a-afy/EECS-106A-Final-Project/devel -DCMAKE_INSTALL_PREFIX=/home/cc/ee106a/fl21/class/ee106a-afy/EECS-106A-Final-Project/install -G Unix Makefiles
