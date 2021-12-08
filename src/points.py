@@ -126,10 +126,6 @@ def real_world_points(image):
 
     bot_x, bot_y = 350, 150
     dst_pts = np.array([
-        # [bot_x - 30 - 195, bot_y + 60],
-        # [bot_x - 30 - 185, bot_y - 80],
-        # [bot_x - 30, bot_y - 80],
-        # [bot_x - 30, bot_y + 60],
         [bot_x, bot_y],
         [bot_x, bot_y - 55],
         [bot_x + 55, bot_y - 52.5],
