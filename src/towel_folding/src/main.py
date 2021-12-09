@@ -11,7 +11,7 @@ def main():
     rospy.wait_for_service('movement')
 
     # Move to calibration position
-    
+    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0])
 
 
 def send_move_cmd(location, purpose):
