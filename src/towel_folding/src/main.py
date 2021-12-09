@@ -8,9 +8,9 @@ from take_picture import take_image
 
 def main():
     # Initialize the movement client node
-    rospy.init_node('movement_client')
+    rospy.init_node('motion_client')
     # Wait until patrol service is ready
-    rospy.wait_for_service('movement')
+    rospy.wait_for_service('/motion')
 
     # Move to calibration position
     send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0])
