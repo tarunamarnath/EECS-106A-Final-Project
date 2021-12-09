@@ -158,23 +158,14 @@ def real_world_points(image):
     plt.imshow(dst1)
     plt.show()
 
-<<<<<<< HEAD
-    return tag, towel
+    return (towel / 10) / 39.37
 
 
 def get_translation_vectors(image_path):
     image = skio.imread(image_path)
     return real_world_points(image)
-=======
-    return towel / 10, tag / 10
-
-
-def get_translation_vectors(image):
-    return real_world_points(image)
-
 # if __name__ == "__main__":
 #     im = skio.imread("./src/img/img27.png")
 #     x, y = real_world_points(im)
 #
 #     plt.show()
->>>>>>> 5f801bb258f2795d58098dae5e519f0119735fa3
