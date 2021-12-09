@@ -3,13 +3,8 @@ import numpy as np
 import rospy
 from towel_folding.srv import Move  # Import service type
 import sys
-<<<<<<< HEAD
 from points import get_translation_vectors
 from take_picture import take_image
-=======
-# from points import get_translation_vectors
-import takeImage 
->>>>>>> d49834cc58f1bed6eed7d5a966f00c6a99bba109
 
 def main():
     # Initialize the movement client node
