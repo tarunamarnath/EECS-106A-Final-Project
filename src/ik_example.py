@@ -5,11 +5,14 @@ from geometry_msgs.msg import PoseStamped
 from moveit_commander import MoveGroupCommander
 import numpy as np
 from numpy import linalg
+from towelfolding.srv import Move  # Service type
 import sys
 from baxter_interface import gripper as robot_gripper
 
 
-def main(robo):
+def motion_callback(request):
+
+    robo = "baxter"
     # Wait for the IK service to become available
     rospy.wait_for_service('compute_ik')
     rospy.init_node('service_query')
@@ -78,75 +81,22 @@ def main(robo):
         request = GetPositionIKRequest()
         request.ik_request.group_name = arm + "_arm"
 
-        # Move to Pos2
-        # make_request(*pos2, link=link)
-
-        # Calibrate
-        # print('Calibrating...')
-        # right_gripper.calibrate()
-        # rospy.sleep(2.0)
-
         # # Move to Pos2
         make_request(*pos4, link=link)
 
-
-        # Move to Pos1
-        make_request(*pos1, link=link)
-
-        # # Close
-        # print('Closing...')
-        # right_gripper.close()
-        # rospy.sleep(1.0)
-
-        # rospy.sleep(2.0)
-
-
-        # # Move to Pos3
-        # make_request(*pos3, link=link)
-
-        # # Move to Pos4
-        # make_request(*pos4, link=link)
-
-        # # Open
-        # print('Opening...')
-        # right_gripper.open()
-        # rospy.sleep(1.0)
-
-        # # Move to Pos3
-        # make_request(*pos3, link=link)
-
-        # # Move to Pos2
-        # make_request(*pos2, link=link)
-
-        # # Move to Pos3
-        # make_request(*pos3, link=link)
-
-        # # Move to Pos4
-        # make_request(*pos4, link=link)
-
-        # # Sleep
-        # rospy.sleep(5.0)
-        # # Close
-        # print('Closing...')
-        # right_gripper.close()
-        # rospy.sleep(1.0)
-
-        # rospy.sleep(2.0)
-
-        # # Move to Pos2
-        # make_request(*pos2, link=link)
-
-        # # move to Pos 1
-        # make_request(*pos1, link=link)
-
-        # # Open
-        # print('Opening...')
-        # right_gripper.open()
-        # rospy.sleep(1.0)
-
-        # rospy.sleep(2.0)
+def motion_server():
+    # Initialize the server node for turtle1
+    rospy.init_node('motion_server')
+    # Register service
+    rospy.Service(
+        "/motion",  # Service name
+        Move,  # Service type
+        motion_callback  # Service callback
+    )
+    rospy.loginfo('Running motion server...')
+    rospy.spin() # Spin the node until Ctrl-C
 
 
 # Python's syntax for a main() method
 if __name__ == '__main__':
-    main(sys.argv[1])
+    motion_server()
