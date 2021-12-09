@@ -4,7 +4,10 @@ import numpy as np
 import skimage.transform as sktr
 import torch
 from skimage import exposure
+<<<<<<< HEAD
 import skimage.io as skio
+=======
+>>>>>>> 5f801bb258f2795d58098dae5e519f0119735fa3
 from torch import nn
 from torch.utils.data import Dataset
 

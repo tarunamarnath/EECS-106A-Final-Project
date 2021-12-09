@@ -3,8 +3,8 @@ import numpy as np
 import rospy
 from towel_folding.srv import Move  # Import service type
 import sys
-from points import get_translation_vectors
-from take_picture import take_image
+# from points import get_translation_vectors
+# from take_picture import take_image
 
 def main():
     # Initialize the movement client node
@@ -13,17 +13,16 @@ def main():
     rospy.wait_for_service('/motion')
 
     # Move to calibration position
-<<<<<<< HEAD
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0])
+    print(send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "Calibrate"))
 
     # Take image
-    image = take_image() # Alexis
+    # image = take_image() # Alexis
 
     # Get offsets from AR tag
-    translation_vectors = get_translation_vectors(image)
+    # translation_vectors = get_translation_vectors(image)
 
     # Get AR tag position
-    AR_pos = # Vidish
+    # AR_pos = # Vidish
 
     # Compute real-world coordinates
     # Alexis
@@ -32,12 +31,9 @@ def main():
     # Perform movements
 
 
-=======
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], 'Calibration')
->>>>>>> d49834cc58f1bed6eed7d5a966f00c6a99bba109
 
     # Stop saving to save compute power
-    takeImage.stop_saving() 
+    # takeImage.stop_saving() 
 
     # Get offsets from AR tag
     image_path = 'camera_image.png'
@@ -63,11 +59,11 @@ def send_move_cmd(location, purpose):
 
     try:
         # Acquire service proxy
-        patrol_proxy = rospy.ServiceProxy('movement', Move)
+        patrol_proxy = rospy.ServiceProxy('/motion', Move)
         # Log data
         rospy.loginfo(purpose)
         # Call patrol service via the proxy
-        patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w)
+        return patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w)
 
     except rospy.ServiceException as e:
         rospy.loginfo(e)
