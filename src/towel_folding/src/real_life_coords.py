@@ -2,22 +2,32 @@
 import rospy
 import numpy as np
 import tf2_ros
+import tf2_py as tf2
+from geometry_msgs.msg import Vector3Stamped
 
-def get_real_life_coords(ar_real_zero, ar_towel_coords):
+def get_real_life_coords(ar_z, ar_towel_coords):
   """
   assume that the ar_coords are 4x2 numpy arrays - 4 dots from the towel
-  translation (x, y, z)  in meters and rotation( quaternion, x, y, z, w). grippers to AR tag 
+  ar_z : the z value of the ar tag to be used as z value of towel values 
   """
+  tfBuffer = tf2_ros.Buffer()
+  listener = tf2_ros.TransformListener(tfBuffer)
   real_coords = np.empty(4)
   print("ar zero: ", ar_real_zero)
-  pointCount = 0
-  #z = ar_real_zero.translation.z
+  i = 0
   for x, y in ar_towel_coords:
-    geometry_msgs.PointStamped point_out
-    print(x,y)
-    pointCount = pointCount + 1
-    #np.sum(ar_real_zero, coord)
-    #real_coords[pointCount][0] = 
+    point_in = Vector3Stamped()
+    point_in.vector.x = x
+    point_in.vector.y = y
+    point_in.vector.z = ar_z
+    point_in.header.stamp = rospy.time()
+    point_in.header.frame_id = "output_frame"
+    # find robot_target_frame
+    # tfBuffer pi if necessary: https://github.com/ros/geometry2/blob/indigo-devel/tf2_ros/src/tf2_ros/buffer_interface.py#L37 
+    real_coords[i] = tfBuffer.transform(point_in, "robot_left_gripper_frame")
+    i = i + 1
+
+  return real_coords
   
 
 
