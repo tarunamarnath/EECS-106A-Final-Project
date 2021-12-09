@@ -3,7 +3,7 @@ import numpy as np
 import rospy
 from towel_folding.srv import Move  # Import service type
 import sys
-# from points import get_translation_vectors
+from points import get_translation_vectors
 # from take_picture import take_image
 
 def main():

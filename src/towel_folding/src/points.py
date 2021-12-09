@@ -50,7 +50,7 @@ class Net(nn.Module):
         return self.decoder(features).reshape(batch_size, 8, 2)
 
 
-model = torch.load("./src/model.pth", map_location=torch.device('cpu'))
+model = torch.load("src/towel_folding/src/model.pth", map_location=torch.device('cpu'))
 model.eval()
 
 
