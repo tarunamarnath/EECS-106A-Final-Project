@@ -4,6 +4,10 @@ import numpy as np
 import skimage.transform as sktr
 import torch
 from skimage import exposure
+<<<<<<< HEAD
+import skimage.io as skio
+=======
+>>>>>>> 5f801bb258f2795d58098dae5e519f0119735fa3
 from torch import nn
 from torch.utils.data import Dataset
 
@@ -157,6 +161,14 @@ def real_world_points(image):
     plt.imshow(dst1)
     plt.show()
 
+<<<<<<< HEAD
+    return tag, towel
+
+
+def get_translation_vectors(image_path):
+    image = skio.imread(image_path)
+    return real_world_points(image)
+=======
     return towel / 10, tag / 10
 
 
@@ -168,3 +180,4 @@ def get_translation_vectors(image):
 #     x, y = real_world_points(im)
 #
 #     plt.show()
+>>>>>>> 5f801bb258f2795d58098dae5e519f0119735fa3
