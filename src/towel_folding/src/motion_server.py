@@ -61,7 +61,7 @@ def motion_server():
     rospy.init_node('motion_server')
     # Register service
     rospy.Service(
-        "movement",  # Service name
+        "/motion",  # Service name
         Move,  # Service type
         motion_callback  # Service callback
     )
