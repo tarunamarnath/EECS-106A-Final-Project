@@ -3,16 +3,22 @@ import numpy as np
 import rospy
 from towel_folding.srv import Move  # Import service type
 import sys
+<<<<<<< HEAD
 from points import get_translation_vectors
 from take_picture import take_image
+=======
+# from points import get_translation_vectors
+import takeImage 
+>>>>>>> d49834cc58f1bed6eed7d5a966f00c6a99bba109
 
 def main():
     # Initialize the movement client node
-    rospy.init_node('movement_client')
+    rospy.init_node('motion_client')
     # Wait until patrol service is ready
-    rospy.wait_for_service('movement')
+    rospy.wait_for_service('/motion')
 
     # Move to calibration position
+<<<<<<< HEAD
     send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0])
 
     # Take image
@@ -31,7 +37,25 @@ def main():
     # Perform movements
 
 
+=======
+    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], 'Calibration')
+>>>>>>> d49834cc58f1bed6eed7d5a966f00c6a99bba109
 
+    # Stop saving to save compute power
+    takeImage.stop_saving() 
+
+    # Get offsets from AR tag
+    image_path = 'camera_image.png'
+    # translation_vectors = get_translation_vectors(image_path)
+
+    # Get AR tag position
+    # AR_pos =  # Vidish
+
+    # Compute real-world coordinates
+    # Alexis
+
+
+    # Perform movements
 
 def send_move_cmd(location, purpose):
     x = location[0]
