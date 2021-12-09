@@ -37,12 +37,14 @@ def transform_generator(ar_frame, gripper_frame):
     try:
       trans = tfBuffer.lookup_transform(ar_frame, gripper_frame, time)
 
+      process.stop()
+      return [trans.transform.translation, trans.transform.rotation]
       print("translation: " + str(trans.transform.translation))
       print("translation: " + str(trans.transform.rotation))
 
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
       pass
-  process.stop()
+  
 
 # This is Python's sytax for a main() method, which is run by default
 # when exectued in the shell
