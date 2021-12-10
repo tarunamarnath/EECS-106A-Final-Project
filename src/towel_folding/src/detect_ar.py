@@ -36,12 +36,12 @@ def transform_generator():
   # Loop until we have a transform
   while not rospy.is_shutdown():
     try:
-      #trans = tfBuffer.lookup_transform(ar_frame, gripper_frame, time)
+      trans = tfBuffer.lookup_transform(ar_frame, gripper_frame, time)
 
-      #process.stop()
-      #return trans.transform.translation.z
-      #print("translation: " + str(trans.transform.translation))
-      #print("translation: " + str(trans.transform.rotation))
+      # process.stop()
+      # return trans.transform.translation.z
+      print("translation: " + str(trans.transform.translation))
+      print("translation: " + str(trans.transform.rotation))
 
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
       pass
