@@ -1,17 +1,17 @@
 import cv2
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import skimage.transform as sktr
 import torch
 from skimage import exposure
-import skimage.io as skio
 from torch import nn
 from torch.utils.data import Dataset
+import skimage.io as skio
 
 
 class Net(nn.Module):
     def __init__(self):
-        super().__init__()
+        super(Net, self).__init__()
 
         self.encoder = nn.Sequential(
             nn.Conv2d(1, 24, 3, 1, padding=2),
@@ -50,7 +50,7 @@ class Net(nn.Module):
         return self.decoder(features).reshape(batch_size, 8, 2)
 
 
-model = torch.load("src/towel_folding/src/model.pth", map_location=torch.device('cpu'))
+model = torch.load("./model_2.pth", map_location=torch.device('cpu'))
 model.eval()
 
 
@@ -152,20 +152,20 @@ def real_world_points(image):
 
     tag, towel = tag - tag_center, towel - tag_center
 
-    plt.scatter(x, y, marker='o', c="b")
-    plt.scatter(m, n, marker='o', c="g")
-
-    plt.imshow(dst1)
-    plt.show()
+    # plt.scatter(x, y, marker='o', c="b")
+    # plt.scatter(m, n, marker='o', c="g")
+    #
+    # plt.imshow(dst1)
+    # plt.show()
 
     return (towel / 10) / 39.37
 
 
-def get_translation_vectors(image_path):
-    image = skio.imread(image_path)
+def get_translation_vectors(image):
     return real_world_points(image)
+
 # if __name__ == "__main__":
 #     im = skio.imread("./src/img/img27.png")
-#     x, y = real_world_points(im)
+#     x, y = real_world_points(im).T
 #
 #     plt.show()
