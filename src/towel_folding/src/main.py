@@ -1,52 +1,42 @@
 #!/usr/bin/env python
 import numpy as np
 import rospy
+
+# from towel_folding.src.compute_folding_movements import compute_movements
+# from towel_folding.src.takeImage import stop_saving
+
 from towel_folding.srv import Move  # Import service type
-import sys
+from takeImage import stop_saving
 from points import get_translation_vectors
-# from take_picture import take_image
+from compute_folding_movements import compute_movements
+from detect_ar import transform_generator
 
 def main():
+    # Start service for AR tag position
+    transform_generator()
     # Initialize the movement client node
     rospy.init_node('motion_client')
     # Wait until patrol service is ready
     rospy.wait_for_service('/motion')
 
     # Move to calibration position
-    print(send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "Calibrate"))
+    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "Calibrate")
 
-    # Take image
-    # image = take_image() # Alexis
+    # Stop saving image to reduce compute intensity
+    stop_saving()
 
-    # Get offsets from AR tag
-    # translation_vectors = get_translation_vectors(image)
-
-    # Get AR tag position
-    # AR_pos = # Vidish
-
-    # Compute real-world coordinates
-    # Alexis
-
-
-    # Perform movements
-
-
-
-    # Stop saving to save compute power
-    # takeImage.stop_saving() 
-
-    # Get offsets from AR tag
+    # Use CV to calculate offsets from AR tag
     image_path = 'camera_image.png'
-    # translation_vectors = get_translation_vectors(image_path)
+    translation_vectors = get_translation_vectors(image_path)
 
-    # Get AR tag position
-    # AR_pos =  # Vidish
-
-    # Compute real-world coordinates
-    # Alexis
-
+    # Compute movements
+    movements = compute_movements(translation_vectors)
 
     # Perform movements
+    for movement in movements:
+        send_move_cmd([movement[1], movement[2], movement[3], 0, 1, 0, 0], movement[0])
+
+
 
 def send_move_cmd(location, purpose):
     x = location[0]
@@ -57,17 +47,19 @@ def send_move_cmd(location, purpose):
     quat_z = location[5]
     quat_w = location[6]
 
-    try:
-        # Acquire service proxy
-        patrol_proxy = rospy.ServiceProxy('/motion', Move)
-        # Log data
-        rospy.loginfo(purpose)
-        # Call patrol service via the proxy
-        return patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w)
+    result = ""
 
-    except rospy.ServiceException as e:
-        rospy.loginfo(e)
+    while result != "Success":
+        try:
+            # Acquire service proxy
+            patrol_proxy = rospy.ServiceProxy('/motion', Move)
+            # Log data
+            rospy.loginfo(purpose)
+            # Call patrol service via the proxy
+            result = patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w)
 
+        except rospy.ServiceException as e:
+            rospy.loginfo(e)
 
 if __name__ == '__main__':
     main()

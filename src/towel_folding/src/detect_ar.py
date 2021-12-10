@@ -31,7 +31,6 @@ def transform_generator():
 # This is Python's sytax for a main() method, which is run by default
 # when exectued in the shell
 if __name__ == '__main__':
-
   try:
     controller(sys.argv[1], sys.argv[2], rospy.Time())
   except rospy.ROSInterruptException:
