@@ -1,0 +1,5 @@
+<launch>
+  <!-- <include file="$/ar_track.launch" /> -->
+  <node pkg="baxter_interfac" name="joint_trajectory_action_server" type="joint_trajectory_action_server.py"/> 
+  <include file="$(find baxter_moveit_config)/launch/baxter_grippers.launch" />
+</launch>
