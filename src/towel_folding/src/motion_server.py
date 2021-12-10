@@ -3,6 +3,7 @@ import rospy
 from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest, GetPositionIKResponse
 from geometry_msgs.msg import PoseStamped
 from moveit_commander import MoveGroupCommander
+from moveit_msgs.msg import OrientationConstraint, Constraints, CollisionObject
 import numpy as np
 from numpy import linalg
 from towel_folding.srv import Move  # Service type
@@ -12,11 +13,13 @@ from baxter_interface import gripper as robot_gripper
 
 def motion_callback(request):
     requested_position = [request.x, request.y, request.z, request.quat_x, request.quat_y, request.quat_z, request.quat_w]
-
+    print(requested_position)
     robo = "baxter"
     # Wait for the IK service to become available
+    print("above line 18")
     rospy.wait_for_service('compute_ik')
-    rospy.init_node('service_query')
+    print("below line 18")
+    
     arm = 'left'
 
     # Create the function used to call the service
@@ -25,6 +28,7 @@ def motion_callback(request):
     link = arm + "_gripper"
 
     def make_request(x, y, z, quat_x, quat_y, quat_z, quat_w, link):
+        
         request = GetPositionIKRequest()
         request.ik_request.group_name = arm + "_arm"
         request.ik_request.ik_link_name = link
@@ -40,11 +44,20 @@ def motion_callback(request):
         request.ik_request.pose_stamped.pose.orientation.z = quat_z
         request.ik_request.pose_stamped.pose.orientation.w = quat_w
 
+        orien_const = OrientationConstraint()
+        orien_const.link_name = "left_gripper"
+        orien_const.header.frame_id = "base"
+        orien_const.orientation.y = -1.0
+
+        constraints = Constraints()
+        # constraints.orientation_constraints = [orien_const]
         try:
             # Send the request to the service
             response = compute_ik(request)
             # Print the response HERE
+            print(response)
             group = MoveGroupCommander(arm + "_arm")
+            group.set_path_constraints(constraints)
             # Setting position and orientation target
             group.set_pose_target(request.ik_request.pose_stamped)
             # Plan IK and execute
@@ -52,18 +65,26 @@ def motion_callback(request):
 
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-            return "Failure"
-
-    make_request(*requested_position, link=link)
+    
+    print(request.close)
+    if request.close == "close":
+        gripper.close()
+    elif request.close == "calibrate":
+        gripper.calibrate()
+    elif request.close == "open":
+        gripper.open()
+    else:
+        make_request(*requested_position, link=link)
     return "Success"
 
 
 def motion_server():
     # Initialize the server node for turtle1
-    rospy.init_node('motion_server')
+    rospy.init_node('towel_motion_server', anonymous=True)
+
     # Register service
     rospy.Service(
-        "/motion",  # Service name
+        "/towel_folding/motion",  # Service name
         Move,  # Service type
         motion_callback  # Service callback
     )

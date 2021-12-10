@@ -80,7 +80,7 @@ class Table(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        sample = {'image': self.image[..., 1], 'landmarks': np.array([])}
+        sample = {'image': self.image[:, :, 1], 'landmarks': np.array([])}
 
         sample = self.transform(sample)
 
@@ -109,6 +109,11 @@ def get_points(image):
 def pad(arr):
     '''Pads an array along the Z-axis'''
     ones = np.ones((arr.shape[0], 1)).astype(int)
+    return np.hstack((arr, ones))
+
+def pad_zero(arr):
+    '''Pads an array along the Z-axis'''
+    ones = np.zeros((arr.shape[0], 1)).astype(int)
     return np.hstack((arr, ones))
 
 
@@ -158,11 +163,15 @@ def real_world_points(image):
     # plt.imshow(dst1)
     # plt.show()
 
-    return (towel / 10) / 39.37
+    return pad_zero((towel / 10) / 39.37)
 
 
-def get_translation_vectors(image):
-    return real_world_points(image)
+def get_translation_vectors(image_path):
+    image = skio.imread(image_path)
+    points = real_world_points(image)
+    points[:, [1, 0]] = -points[:, [0, 1]]
+    return points
+
 
 # if __name__ == "__main__":
 #     im = skio.imread("./src/img/img27.png")
