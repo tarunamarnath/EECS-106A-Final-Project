@@ -11,50 +11,51 @@ from baxter_interface import gripper as robot_gripper
 
 
 def motion_callback(request):
-    # requested_position = [request.x, request.y, request.z, request.quat_x, request.quat_y, request.quat_z, request.quat_w]
+    requested_position = [request.x, request.y, request.z, request.quat_x, request.quat_y, request.quat_z, request.quat_w]
 
-    # robo = "baxter"
-    # # Wait for the IK service to become available
-    # rospy.wait_for_service('compute_ik')
-    # rospy.init_node('service_query')
-    # arm = 'left'
-    # # Create the function used to call the service
-    # compute_ik = rospy.ServiceProxy('compute_ik', GetPositionIK)
-    # gripper = robot_gripper.Gripper(arm)
-    # # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
-    # link = arm + "_gripper"
+    robo = "baxter"
+    # Wait for the IK service to become available
+    rospy.wait_for_service('compute_ik')
+    rospy.init_node('service_query')
+    arm = 'left'
 
-    # def make_request(x, y, z, quat_x, quat_y, quat_z, quat_w, link):
-    #     request = GetPositionIKRequest()
-    #     request.ik_request.group_name = arm + "_arm"
-    #     request.ik_request.ik_link_name = link
-    #     request.ik_request.attempts = 20
-    #     request.ik_request.pose_stamped.header.frame_id = "base"
+    # Create the function used to call the service
+    compute_ik = rospy.ServiceProxy('compute_ik', GetPositionIK)
+    gripper = robot_gripper.Gripper(arm)
+    link = arm + "_gripper"
 
-    #     # Set the desired orientation for the end effector HERE
-    #     request.ik_request.pose_stamped.pose.position.x = x
-    #     request.ik_request.pose_stamped.pose.position.y = y
-    #     request.ik_request.pose_stamped.pose.position.z = z
-    #     request.ik_request.pose_stamped.pose.orientation.x = quat_x
-    #     request.ik_request.pose_stamped.pose.orientation.y = quat_y
-    #     request.ik_request.pose_stamped.pose.orientation.z = quat_z
-    #     request.ik_request.pose_stamped.pose.orientation.w = quat_w
+    def make_request(x, y, z, quat_x, quat_y, quat_z, quat_w, link):
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = arm + "_arm"
+        request.ik_request.ik_link_name = link
+        request.ik_request.attempts = 20
+        request.ik_request.pose_stamped.header.frame_id = "base"
 
-    #     try:
-    #         # Send the request to the service
-    #         response = compute_ik(request)
-    #         # Print the response HERE
-    #         group = MoveGroupCommander(arm + "_arm")
-    #         # Setting position and orientation target
-    #         group.set_pose_target(request.ik_request.pose_stamped)
-    #         # Plan IK and execute
-    #         group.go()
+        # Set the desired orientation for the end effector HERE
+        request.ik_request.pose_stamped.pose.position.x = x
+        request.ik_request.pose_stamped.pose.position.y = y
+        request.ik_request.pose_stamped.pose.position.z = z
+        request.ik_request.pose_stamped.pose.orientation.x = quat_x
+        request.ik_request.pose_stamped.pose.orientation.y = quat_y
+        request.ik_request.pose_stamped.pose.orientation.z = quat_z
+        request.ik_request.pose_stamped.pose.orientation.w = quat_w
 
-    #     except rospy.ServiceException, e:
-    #         print "Service call failed: %s"%e
+        try:
+            # Send the request to the service
+            response = compute_ik(request)
+            # Print the response HERE
+            group = MoveGroupCommander(arm + "_arm")
+            # Setting position and orientation target
+            group.set_pose_target(request.ik_request.pose_stamped)
+            # Plan IK and execute
+            group.go()
 
-    # make_request(*requested_position, link=link)
-    return "failure"
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+            return "Failure"
+
+    make_request(*requested_position, link=link)
+    return "Success"
 
 
 def motion_server():
