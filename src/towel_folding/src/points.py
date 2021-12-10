@@ -49,8 +49,8 @@ class Net(nn.Module):
 
         return self.decoder(features).reshape(batch_size, 8, 2)
 
-
-model = torch.load("./model_2.pth", map_location=torch.device('cpu'))
+model = Net()
+model.load_state_dict(torch.load("src/towel_folding/src/dict.pth"))
 model.eval()
 
 
