@@ -16,9 +16,7 @@ def motion_callback(request):
     print(requested_position)
     robo = "baxter"
     # Wait for the IK service to become available
-    print("above line 18")
     rospy.wait_for_service('compute_ik')
-    print("below line 18")
     
     arm = 'left'
 

@@ -77,26 +77,6 @@ def main():
     # Drop towel
     send_move_cmd(gripper, "Open", "open")
 
-# def send_move_cmd(location, purpose, close=""):
-#     x = location[0]
-#     y = location[1]
-#     z = location[2]
-#     quat_x = 0
-#     quat_y = 1
-#     quat_z = 0
-#     quat_w = 0
-
-#     try:
-#         # Acquire service proxy
-#         patrol_proxy = rospy.ServiceProxy('/towel_folding/motion', Move)
-#         # Log data
-#         rospy.loginfo(purpose)
-#         # Call patrol service via the proxy
-#         patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w, close)
-
-#     except rospy.ServiceException as e:
-        # rospy.loginfo(e)
-
 def send_move_cmd(location, purpose, close=""):
     x = location[0]
     y = location[1]

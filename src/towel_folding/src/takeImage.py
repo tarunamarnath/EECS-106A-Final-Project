@@ -23,7 +23,6 @@ def takeImage(data):
         try:
             # Convert your ROS Image message to OpenCV2
             cv2_img = bridge.imgmsg_to_cv2(data, "bgr8")
-            print(cv2_img)
             cv2.imwrite('./src/towel_folding/src/camera_image.png', cv2_img)
             exit
 
