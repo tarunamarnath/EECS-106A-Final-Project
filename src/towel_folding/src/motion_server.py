@@ -66,7 +66,6 @@ def motion_callback(request):
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
     
-    print(request.close)
     if request.close == "close":
         gripper.close()
     elif request.close == "calibrate":

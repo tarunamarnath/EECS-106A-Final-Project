@@ -27,97 +27,90 @@ def main():
     rospy.sleep(2.0)
     takeImage.stop_saving()
 
-    # send_move_cmd([.404, .153, -.098, 0.0, 1.0, 0.0, 0.0], "motion2")
-
-    # Stop saving image to reduce compute intensity
-    
-
     # Use CV to calculate offsets from AR tag
     image_path = 'src/towel_folding/src/camera_image.png'
     translation_vectors = get_translation_vectors(image_path)
 
-    print(translation_vectors)
-
+    # Hard coded for now
     ar_tag_loc = np.array([.704, -0.048, -0.27])
-    base = np.array([.804, .253, .098])
-
-
+    # 0.7 empirically tested to be slightly inside
     towel_coords = ar_tag_loc + 0.7 * translation_vectors 
-
-    base_towel = towel_coords
+    # Sleep
     rospy.sleep(1.0)
 
     # Compute movements
-    # movements = compute_movements(base_towel)
+    # movements = compute_movements(towel_coords)
 
     # print(movements)
 
     print(towel_coords)
     
+    # How far above the table to move the towel
     lift = np.array([0, 0, .1])
-    # send_move_cmd_towel([.5, .456, -.25], purpose="Blah")
-    # send_move_cmd_towel([.807, .452, -.25], purpose="Blah")
-    # send_move_cmd_towel([.811, .117, -.25], purpose="Blah")
-    # send_move_cmd_towel([.532, .084, -.25], purpose="Blah")
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "calibrate", purpose="Calibrate")
-    send_move_cmd_towel(base_towel[0] + lift, purpose="Bottom Left Lift")
-    send_move_cmd_towel(base_towel[0], purpose="Bottom Left")
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "close", purpose="Close")
-    send_move_cmd_towel(base_towel[0] + lift, purpose="Bottom Left Lift")
-    # send_move_cmd_towel(base_towel[1], purpose="Top Left")
+    # Temporary 0s for gripper
+    gripper = [0 for i in range(7)]
+    # Calibrate
+    send_move_cmd(gripper, "Calibrate", "calibrate")
+    # Hover over bottom-left
+    send_move_cmd(towel_coords[0] + lift, "Bottom Left Lift")
+    # Go down to bottom-left
+    send_move_cmd(towel_coords[0], purpose="Bottom Left")
+    # Close
+    send_move_cmd(gripper, "Close", "close")
+    # Lift back up at bottom-left
+    send_move_cmd(towel_coords[0] + lift, purpose="Bottom Left Lift")
+    # Get to top-right to drop off towel, but don't go all the way 
+    send_move_cmd(towel_coords[2] + lift + np.array([0, towel_coords[0][1] - towel_coords[1][1], 0]), purpose="Top Right Lift Inside")
+    # Let go of towel
+    send_move_cmd(gripper, "Open", "open")
 
-    send_move_cmd_towel(base_towel[2] + lift + np.array([0, base_towel[0][1] - base_towel[1][1], 0]), purpose="Top Right Lift Inside")
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "open", purpose="Open")
-    # send_move_cmd_towel(base_towel[2], purpose="Top Right")
+    # Hover over top-left
+    send_move_cmd(towel_coords[1] + lift, purpose="Top Left Lift")
+    # Drop down to towel
+    send_move_cmd(towel_coords[1], purpose="Top Left")
+    # Grab towel
+    send_move_cmd(gripper, "Close", "close")
+    # Lift towel
+    send_move_cmd(towel_coords[1] + lift, purpose="Top Left Lift")
+    # Move to bottom-left
+    send_move_cmd(towel_coords[3] + lift, purpose="Bot Left Lift")
+    # Drop towel
+    send_move_cmd(gripper, "Open", "open")
 
-    send_move_cmd_towel(base_towel[1] + lift, purpose="Top Left Lift")
-    send_move_cmd_towel(base_towel[1], purpose="Top Left")
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "close", purpose="Close")
-    send_move_cmd_towel(base_towel[1] + lift, purpose="Top Left Lift")
-    send_move_cmd_towel(base_towel[3] + lift, purpose="Bot Left Lift")
-    # send_move_cmd_towel(base_towel[3], purpose="Bot Left")
-    send_move_cmd([.804, .253, .098, 0.0, 1.0, 0.0, 0.0], "open", purpose="Open")
+# def send_move_cmd(location, purpose, close=""):
+#     x = location[0]
+#     y = location[1]
+#     z = location[2]
+#     quat_x = 0
+#     quat_y = 1
+#     quat_z = 0
+#     quat_w = 0
 
+#     try:
+#         # Acquire service proxy
+#         patrol_proxy = rospy.ServiceProxy('/towel_folding/motion', Move)
+#         # Log data
+#         rospy.loginfo(purpose)
+#         # Call patrol service via the proxy
+#         patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w, close)
 
-    # Perform movements
-    # for movement in movements:
-    #     send_move_cmd([movement[1], movement[2], movement[3], 0, 1, 0, 0], movement[0])
+#     except rospy.ServiceException as e:
+        # rospy.loginfo(e)
 
-
-def send_move_cmd_towel(location, purpose):
+def send_move_cmd(location, purpose, close=""):
     x = location[0]
     y = location[1]
     z = location[2]
-    quat_x = 0
-    quat_y = 1
-    quat_z = 0
-    quat_w = 0
-    close = " "
-
-    result = ""
-
-    try:
-        # Acquire service proxy
-        patrol_proxy = rospy.ServiceProxy('/towel_folding/motion', Move)
-        # Log data
-        rospy.loginfo(purpose)
-        # Call patrol service via the proxy
-        patrol_proxy(x, y, z, quat_x, quat_y, quat_z, quat_w, "")
-
-    except rospy.ServiceException as e:
-        rospy.loginfo(e)
-
-def send_move_cmd(location, close, purpose):
-    x = location[0]
-    y = location[1]
-    z = location[2]
-    quat_x = location[3]
-    quat_y = location[4]
-    quat_z = location[5]
-    quat_w = location[6]
-    close = close
-
-    result = ""
+    if len(location) == 3:
+        quat_x = 0
+        quat_y = 1
+        quat_z = 0
+        quat_w = 0
+    else:
+        quat_x = location[3]
+        quat_y = location[4]
+        quat_z = location[5]
+        quat_w = location[6]
 
     try:
         # Acquire service proxy
