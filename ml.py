@@ -192,10 +192,11 @@ def show_landmarks(ax, image, landmarks):
     ax.scatter(x, y, s=10, marker='o', c='r')
 
 
-idxs = np.arange(27)
+length = len(os.listdir("./src/lbl"))
+idxs = np.arange(length)
 np.random.shuffle(idxs)
 
-train_idxs, val_idxs = idxs[:22], idxs[22:]
+train_idxs, val_idxs = idxs[:int(length * 0.8)], idxs[int(length * 0.8):]
 
 expanded_train = train_idxs.copy()
 for i in train_idxs:
