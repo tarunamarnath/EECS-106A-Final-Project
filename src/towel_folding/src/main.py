@@ -17,17 +17,16 @@ import tf2_ros
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped
 
+# ar_tag_loc = None
 
-ar_tag_loc = None
+# def get_ar_tag(data):
+#     global ar_tag_loc
 
-def get_ar_tag(data):
-    global ar_tag_loc 
-
-    # print('hi')
-    # print(data.transform.translation.x)
-    ar_tag_loc = [data.transform.translation.x, data.transform.translation.y, data.transform.translation.z]
-    # if ar_tag_loc != None:
-    #     raise Exception
+#     print('hi')
+#     print(data.transform.translation.x)
+#     ar_tag_loc = [data.transform.translation.x, data.transform.translation.y, data.transform.translation.z]
+#     if ar_tag_loc != None:
+#         raise Exception
 
 def main():
     global ar_tag_loc
@@ -49,13 +48,13 @@ def main():
     image_path = 'src/towel_folding/src/camera_image.png'
     translation_vectors = get_translation_vectors(image_path)
 
-    r = rospy.Rate(1)
-    try:
-        rospy.Subscriber("marker_information", TransformStamped, get_ar_tag)
-        # raise Exception
-        r.sleep()
-    except:
-        pass
+    # r = rospy.Rate(1)
+    # try:
+    #     rospy.Subscriber("marker_information", TransformStamped, get_ar_tag)
+    #     # raise Exception
+    #     r.sleep()
+    # except:
+    #     pass
 
     rospy.sleep(2)
     # Get AR tag coordinates
@@ -63,8 +62,9 @@ def main():
     # tfListener = tf2_ros.TransformListener(tfBuffer)
     # trans = tfBuffer.lookup_transform("world", "ar_marker_3", rospy.Time.now())
     # print(trans)
-    # Hard coded for now
-    # ar_tag_loc = np.array([.704, -0.048, -0.27])
+    # Hard coded for now - PC was having problems with AR tag (confirmed by Eric to be a computer issue)
+    # We do know however that AR tag publishing works properly, just not with MoveIt at the same time
+    ar_tag_loc = np.array([.704, -0.048, -0.27])
     # 0.7 empirically tested to be slightly inside
     print(ar_tag_loc)
     towel_coords = ar_tag_loc + 0.7 * translation_vectors 

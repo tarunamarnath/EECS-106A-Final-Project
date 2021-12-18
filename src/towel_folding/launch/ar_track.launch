@@ -5,7 +5,7 @@
     <arg name="max_track_error"      default="0.05" />
 
     <arg name="cam_image_topic"      default="/cameras/left_hand_camera/image_raw" />
-    <arg name="cam_info_topic"       default="/cameras_left_hand_camera/camera_info" />
+    <arg name="cam_info_topic"       default="/cameras/left_hand_camera/camera_info" />
     <arg name="output_frame"         default="/cameras/left_hand_camera" />
 
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
